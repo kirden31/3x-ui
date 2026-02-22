@@ -3,7 +3,7 @@ package sub
 import (
 	"encoding/json"
 
-	"github.com/kirden31/3x-ui/database/model" // подставьте ваш модульный путь, если отличается
+	"github.com/kirden31/3x-ui/database/model"
 )
 
 // applyCustomPortRules mutates inbound in-place when inbound.Port in the target range.
