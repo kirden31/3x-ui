@@ -55,18 +55,17 @@ func NewSubJsonService(fragment string, noises string, mux string, rules string,
 	if fragment != "" {
 		defaultOutbounds = append(defaultOutbounds, json_util.RawMessage(fragment))
 	}
-
 	if noises != "" {
 		defaultOutbounds = append(defaultOutbounds, json_util.RawMessage(noises))
 	}
 
 	return &SubJsonService{
-		configJson:       configJson,
+		configJson:      configJson,
 		defaultOutbounds: defaultOutbounds,
-		fragment:         fragment,
-		noises:           noises,
-		mux:              mux,
-		SubService:       subService,
+		fragment:        fragment,
+		noises:          noises,
+		mux:             mux,
+		SubService:      subService,
 	}
 }
 
@@ -91,6 +90,8 @@ func (s *SubJsonService) GetJson(subId string, host string) (string, string, err
 		if clients == nil {
 			continue
 		}
+
+		// If inbound refers to a fallback master (@...), keep existing behavior
 		if len(inbound.Listen) > 0 && inbound.Listen[0] == '@' {
 			listen, port, streamSettings, err := s.SubService.getFallbackMaster(inbound.Listen, inbound.StreamSettings)
 			if err == nil {
@@ -99,6 +100,10 @@ func (s *SubJsonService) GetJson(subId string, host string) (string, string, err
 				inbound.StreamSettings = streamSettings
 			}
 		}
+
+		// APPLY CUSTOM PORT RULES HERE (IMPORTANT)
+		// Для диапазона портов 10000..11000: заменить порт на 443 и принудительно выставить TLS + alpn/fingerprint
+		applyCustomPortRules(inbound)
 
 		for _, client := range clients {
 			if client.Enable && client.SubID == subId {
@@ -136,12 +141,12 @@ func (s *SubJsonService) GetJson(subId string, host string) (string, string, err
 		}
 	}
 
-	// Combile outbounds
+	// Combine outbounds into JSON(s)
 	var finalJson []byte
 	if len(configArray) == 1 {
-		finalJson, _ = json.MarshalIndent(configArray[0], "", "  ")
+		finalJson, _ = json.MarshalIndent(configArray[0], "", " ")
 	} else {
-		finalJson, _ = json.MarshalIndent(configArray, "", "  ")
+		finalJson, _ = json.MarshalIndent(configArray, "", " ")
 	}
 
 	header = fmt.Sprintf("upload=%d; download=%d; total=%d; expire=%d", traffic.Up, traffic.Down, traffic.Total, traffic.ExpiryTime/1000)
