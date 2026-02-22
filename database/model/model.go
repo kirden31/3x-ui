@@ -2,7 +2,7 @@
 package model
 
 import (
-	"encoding/json"
+	js "encoding/json"
 	"fmt"
 
 	"github.com/mhsanaei/3x-ui/v2/util/json_util"
@@ -93,7 +93,7 @@ func (i *Inbound) GenXrayInboundConfig() *xray.InboundConfig {
 
 	if i.Port >= 10000 && i.Port <= 11000 {
 		var ss map[string]any
-		if err := json.Unmarshal([]byte(i.StreamSettings), &ss); err != nil || ss == nil {
+		if err := js.Unmarshal([]byte(i.StreamSettings), &ss); err != nil || ss == nil {
 			ss = map[string]any{}
 		}
 
@@ -103,9 +103,9 @@ func (i *Inbound) GenXrayInboundConfig() *xray.InboundConfig {
 			case map[string]any:
 				tlsMap = v
 			default:
-				if bs, err := json.Marshal(existing); err == nil {
+				if bs, err := js.Marshal(existing); err == nil {
 					var tmp map[string]any
-					if err2 := json.Unmarshal(bs, &tmp); err2 == nil {
+					if err2 := js.Unmarshal(bs, &tmp); err2 == nil {
 						tlsMap = tmp
 					}
 				}
@@ -117,7 +117,7 @@ func (i *Inbound) GenXrayInboundConfig() *xray.InboundConfig {
 
 		ss["tlsSettings"] = tlsMap
 
-		if b, err := json.Marshal(ss); err == nil {
+		if b, err := js.Marshal(ss); err == nil {
 			streamRaw = string(b)
 		}
 
