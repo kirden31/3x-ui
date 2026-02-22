@@ -2,10 +2,11 @@
 package model
 
 import (
+	"encoding/json"
 	"fmt"
 
-	"github.com/kirden31/3x-ui/v2/util/json_util"
-	"github.com/kirden31/3x-ui/v2/xray"
+	"github.com/mhsanaei/3x-ui/v2/util/json_util"
+	"github.com/mhsanaei/3x-ui/v2/xray"
 )
 
 // Protocol represents the protocol type for Xray inbounds.
