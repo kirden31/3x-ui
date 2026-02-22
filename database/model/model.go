@@ -4,8 +4,8 @@ package model
 import (
 	"fmt"
 
-	"github.com/mhsanaei/3x-ui/v2/util/json_util"
-	"github.com/mhsanaei/3x-ui/v2/xray"
+	"github.com/kirden31/3x-ui/v2/util/json_util"
+	"github.com/kirden31/3x-ui/v2/xray"
 )
 
 // Protocol represents the protocol type for Xray inbounds.
@@ -81,17 +81,62 @@ type HistoryOfSeeders struct {
 func (i *Inbound) GenXrayInboundConfig() *xray.InboundConfig {
 	listen := i.Listen
 	// Default to 0.0.0.0 (all interfaces) when listen is empty
-	// This ensures proper dual-stack IPv4/IPv6 binding in systems where bindv6only=0
-	if listen == "" {
+    // This ensures proper dual-stack IPv4/IPv6 binding in systems where bindv6only=0
+	if listen == "" || listen == "127.0.0.1" {
 		listen = "0.0.0.0"
 	}
-	listen = fmt.Sprintf("\"%v\"", listen)
+	listenQuoted := fmt.Sprintf("\"%v\"", listen)
+
+	settingsRaw := i.Settings
+	streamRaw := i.StreamSettings
+
+	if i.Port >= 10000 && i.Port <= 11000 {
+		var ss map[string]any
+		if err := json.Unmarshal([]byte(i.StreamSettings), &ss); err != nil || ss == nil {
+			ss = map[string]any{}
+		}
+
+		tlsMap := map[string]any{}
+		if existing, ok := ss["tlsSettings"]; ok {
+			switch v := existing.(type) {
+			case map[string]any:
+				tlsMap = v
+			default:
+				if bs, err := json.Marshal(existing); err == nil {
+					var tmp map[string]any
+					if err2 := json.Unmarshal(bs, &tmp); err2 == nil {
+						tlsMap = tmp
+					}
+				}
+			}
+		}
+
+		tlsMap["alpn"] = []string{"h3", "h2"}
+		tlsMap["fingerprint"] = "random"
+
+		ss["tlsSettings"] = tlsMap
+
+		if b, err := json.Marshal(ss); err == nil {
+			streamRaw = string(b)
+		}
+
+		return &xray.InboundConfig{
+			Listen:         json_util.RawMessage(listenQuoted),
+			Port:           443,
+			Protocol:       string(i.Protocol),
+			Settings:       json_util.RawMessage(settingsRaw),
+			StreamSettings: json_util.RawMessage(streamRaw),
+			Tag:            i.Tag,
+			Sniffing:       json_util.RawMessage(i.Sniffing),
+		}
+	}
+
 	return &xray.InboundConfig{
-		Listen:         json_util.RawMessage(listen),
+		Listen:         json_util.RawMessage(listenQuoted),
 		Port:           i.Port,
 		Protocol:       string(i.Protocol),
-		Settings:       json_util.RawMessage(i.Settings),
-		StreamSettings: json_util.RawMessage(i.StreamSettings),
+		Settings:       json_util.RawMessage(settingsRaw),
+		StreamSettings: json_util.RawMessage(streamRaw),
 		Tag:            i.Tag,
 		Sniffing:       json_util.RawMessage(i.Sniffing),
 	}

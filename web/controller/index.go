@@ -5,9 +5,9 @@ import (
 	"text/template"
 	"time"
 
-	"github.com/mhsanaei/3x-ui/v2/logger"
-	"github.com/mhsanaei/3x-ui/v2/web/service"
-	"github.com/mhsanaei/3x-ui/v2/web/session"
+	"github.com/kirden31/3x-ui/v2/logger"
+	"github.com/kirden31/3x-ui/v2/web/service"
+	"github.com/kirden31/3x-ui/v2/web/session"
 
 	"github.com/gin-contrib/sessions"
 	"github.com/gin-gonic/gin"

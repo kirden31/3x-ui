@@ -11,14 +11,14 @@ import (
 	"strings"
 	"time"
 
-	"github.com/mhsanaei/3x-ui/v2/database"
-	"github.com/mhsanaei/3x-ui/v2/database/model"
-	"github.com/mhsanaei/3x-ui/v2/logger"
-	"github.com/mhsanaei/3x-ui/v2/util/common"
-	"github.com/mhsanaei/3x-ui/v2/util/random"
-	"github.com/mhsanaei/3x-ui/v2/util/reflect_util"
-	"github.com/mhsanaei/3x-ui/v2/web/entity"
-	"github.com/mhsanaei/3x-ui/v2/xray"
+	"github.com/kirden31/3x-ui/v2/database"
+	"github.com/kirden31/3x-ui/v2/database/model"
+	"github.com/kirden31/3x-ui/v2/logger"
+	"github.com/kirden31/3x-ui/v2/util/common"
+	"github.com/kirden31/3x-ui/v2/util/random"
+	"github.com/kirden31/3x-ui/v2/util/reflect_util"
+	"github.com/kirden31/3x-ui/v2/web/entity"
+	"github.com/kirden31/3x-ui/v2/xray"
 )
 
 //go:embed config.json
