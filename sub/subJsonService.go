@@ -101,8 +101,7 @@ func (s *SubJsonService) GetJson(subId string, host string) (string, string, err
 			}
 		}
 
-		// APPLY CUSTOM PORT RULES HERE (IMPORTANT)
-		// Для диапазона портов 10000..11000: заменить порт на 443 и принудительно выставить TLS + alpn/fingerprint
+		// APPLY CUSTOM PORT RULES
 		applyCustomPortRules(inbound)
 
 		for _, client := range clients {

@@ -16,9 +16,16 @@ func applyCustomPortRules(inbound *model.Inbound) {
 	if inbound == nil {
 		return
 	}
+
 	if inbound.Port >= 10000 && inbound.Port <= 11000 {
 		// set the port in the generated subscription context
 		inbound.Port = 443
+
+        // if listen is empty or loopback, use 0.0.0.0
+		l := strings.TrimSpace(inbound.Listen)
+		if l == "" || l == "127.0.0.1" || l == "localhost" || strings.HasPrefix(l, "@") {
+			inbound.Listen = "0.0.0.0"
+		}
 
 		// parse stream settings into map
 		var stream map[string]any
@@ -29,13 +36,13 @@ func applyCustomPortRules(inbound *model.Inbound) {
 		// ensure security tls (this is safe even if it was already set)
 		stream["security"] = "tls"
 
-		// ensure tlsSettings exists and is a map
-		tlsMap := map[string]any{}
+		// ensure tlsSettings map
+		var tlsMap map[string]any
 		if existing, ok := stream["tlsSettings"]; ok {
 			if m, ok2 := existing.(map[string]any); ok2 {
 				tlsMap = m
 			} else {
-				// try to normalize
+				// normalize if it's encoded differently
 				if bs, err := json.Marshal(existing); err == nil {
 					var tmp map[string]any
 					if err2 := json.Unmarshal(bs, &tmp); err2 == nil {
@@ -44,8 +51,11 @@ func applyCustomPortRules(inbound *model.Inbound) {
 				}
 			}
 		}
+		if tlsMap == nil {
+			tlsMap = map[string]any{}
+		}
 
-		// set or override only the requested fields
+		// set required TLS entries
 		tlsMap["alpn"] = []any{"h3", "h2"}
 		tlsMap["fingerprint"] = "random"
 
