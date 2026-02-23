@@ -2,7 +2,7 @@
 package model
 
 import (
-	"encoding/json"
+// 	"encoding/json"
 	"fmt"
 
 	"github.com/kirden31/3x-ui/v2/util/json_util"
@@ -83,9 +83,14 @@ func (i *Inbound) GenXrayInboundConfig() *xray.InboundConfig {
 	listen := i.Listen
 	// Default to 0.0.0.0 (all interfaces) when listen is empty
     // This ensures proper dual-stack IPv4/IPv6 binding in systems where bindv6only=0
-	if listen == "" || listen == "127.0.0.1" || listen == "localhost" {
+	if listen == "" {
 		listen = "0.0.0.0"
 	}
+// 	if i.Port >= 10000 && i.Port <= 11000 {
+// 	    if listen == "127.0.0.1" || listen == "localhost" {
+// 		    listen = "0.0.0.0"
+// 	    }
+
 	listenQuoted := fmt.Sprintf("\"%v\"", listen)
 
 	settingsRaw := i.Settings
