@@ -107,7 +107,7 @@ func (s *SubJsonService) GetJson(subId string, host string) (string, string, err
 		for _, client := range clients {
 			if client.Enable && client.SubID == subId {
 				clientTraffics = append(clientTraffics, s.SubService.getClientTraffics(inbound.ClientStats, client.Email))
-				newConfigs := s.getConfig(inbound.GenXrayInboundConfig(), client, host)
+				newConfigs := s.getConfig(inbound, client, host)
 				configArray = append(configArray, newConfigs...)
 			}
 		}
