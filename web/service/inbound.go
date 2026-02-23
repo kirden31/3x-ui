@@ -287,8 +287,9 @@ func (s *InboundService) AddInbound(inbound *model.Inbound) (*model.Inbound, boo
 		}
 	}()
 
-    normalizeInboundForDB(inbound)
-	err = tx.Save(inbound).Error
+    inbCopy := *inbound
+    normalizeInboundForDB(inbCopy)
+	err = tx.Save(inbCopy).Error
 	if err == nil {
 		if len(inbound.ClientStats) == 0 {
 			for _, client := range clients {
@@ -511,7 +512,6 @@ func (s *InboundService) UpdateInbound(inbound *model.Inbound) (*model.Inbound, 
 	}
 	s.xrayApi.Close()
 
-    normalizeInboundForDB(oldInbound)
 	return inbound, needRestart, tx.Save(oldInbound).Error
 }
 
@@ -675,7 +675,6 @@ func (s *InboundService) AddInboundClient(data *model.Inbound) (bool, error) {
 	}
 	s.xrayApi.Close()
 
-    normalizeInboundForDB(oldInbound)
 	return needRestart, tx.Save(oldInbound).Error
 }
 
@@ -765,7 +764,6 @@ func (s *InboundService) DelInboundClient(inboundId int, clientId string) (bool,
 		}
 	}
 
-    normalizeInboundForDB(oldInbound)
 	return needRestart, db.Save(oldInbound).Error
 }
 
@@ -942,7 +940,6 @@ func (s *InboundService) UpdateInboundClient(data *model.Inbound, clientId strin
 		needRestart = true
 	}
 
-    normalizeInboundForDB(oldInbound)
 	return needRestart, tx.Save(oldInbound).Error
 }
 
@@ -1968,7 +1965,6 @@ func (s *InboundService) DelDepletedClients(id int) (err error) {
 
 			oldInbound.Settings = string(newSettings)
 
-			normalizeInboundForDB(oldInbound)
 			err = tx.Save(oldInbound).Error
 			if err != nil {
 				return err
@@ -2519,6 +2515,5 @@ func (s *InboundService) DelInboundClientByEmail(inboundId int, email string) (b
 		}
 	}
 
-    normalizeInboundForDB(oldInbound)
 	return needRestart, db.Save(oldInbound).Error
 }
