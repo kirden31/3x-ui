@@ -91,46 +91,46 @@ func (i *Inbound) GenXrayInboundConfig() *xray.InboundConfig {
 	settingsRaw := i.Settings
 	streamRaw := i.StreamSettings
 
-	if i.Port >= 10000 && i.Port <= 11000 {
-		var ss map[string]any
-		if err := json.Unmarshal([]byte(i.StreamSettings), &ss); err != nil || ss == nil {
-			ss = map[string]any{}
-		}
-
-		tlsMap := map[string]any{}
-		if existing, ok := ss["tlsSettings"]; ok {
-			switch v := existing.(type) {
-			case map[string]any:
-				tlsMap = v
-			default:
-				if bs, err := json.Marshal(existing); err == nil {
-					var tmp map[string]any
-					if err2 := json.Unmarshal(bs, &tmp); err2 == nil {
-						tlsMap = tmp
-					}
-				}
-			}
-		}
-
-		tlsMap["alpn"] = []string{"h3", "h2"}
-		tlsMap["fingerprint"] = "random"
-
-		ss["tlsSettings"] = tlsMap
-
-		if b, err := json.Marshal(ss); err == nil {
-			streamRaw = string(b)
-		}
-
-		return &xray.InboundConfig{
-			Listen:         json_util.RawMessage(listenQuoted),
-			Port:           443,
-			Protocol:       string(i.Protocol),
-			Settings:       json_util.RawMessage(settingsRaw),
-			StreamSettings: json_util.RawMessage(streamRaw),
-			Tag:            i.Tag,
-			Sniffing:       json_util.RawMessage(i.Sniffing),
-		}
-	}
+// 	if i.Port >= 10000 && i.Port <= 11000 {
+// 		var ss map[string]any
+// 		if err := json.Unmarshal([]byte(i.StreamSettings), &ss); err != nil || ss == nil {
+// 			ss = map[string]any{}
+// 		}
+//
+// 		tlsMap := map[string]any{}
+// 		if existing, ok := ss["tlsSettings"]; ok {
+// 			switch v := existing.(type) {
+// 			case map[string]any:
+// 				tlsMap = v
+// 			default:
+// 				if bs, err := json.Marshal(existing); err == nil {
+// 					var tmp map[string]any
+// 					if err2 := json.Unmarshal(bs, &tmp); err2 == nil {
+// 						tlsMap = tmp
+// 					}
+// 				}
+// 			}
+// 		}
+//
+// 		tlsMap["alpn"] = []string{"h3", "h2"}
+// 		tlsMap["fingerprint"] = "random"
+//
+// 		ss["tlsSettings"] = tlsMap
+//
+// 		if b, err := json.Marshal(ss); err == nil {
+// 			streamRaw = string(b)
+// 		}
+//
+// 		return &xray.InboundConfig{
+// 			Listen:         json_util.RawMessage(listenQuoted),
+// 			Port:           443,
+// 			Protocol:       string(i.Protocol),
+// 			Settings:       json_util.RawMessage(settingsRaw),
+// 			StreamSettings: json_util.RawMessage(streamRaw),
+// 			Tag:            i.Tag,
+// 			Sniffing:       json_util.RawMessage(i.Sniffing),
+// 		}
+// 	}
 
 	return &xray.InboundConfig{
 		Listen:         json_util.RawMessage(listenQuoted),
