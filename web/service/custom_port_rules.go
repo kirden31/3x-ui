@@ -2,7 +2,6 @@ package service
 
 import (
     "encoding/json"
-    "os"
     "strings"
 
     "github.com/kirden31/3x-ui/v2/database/model"

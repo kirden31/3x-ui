@@ -1121,7 +1121,6 @@ func (s *InboundService) adjustTraffics(tx *gorm.DB, dbClientTraffics []*xray.Cl
 			}
 		}
 
-        normalizeInboundForDB(inbounds)
 		err = tx.Save(inbounds).Error
 		if err != nil {
 			logger.Warning("AddClientTraffic update inbounds ", err)
@@ -1205,13 +1204,11 @@ func (s *InboundService) autoRenewClients(tx *gorm.DB) (bool, int64, error) {
 		inbounds[inbound_index].Settings = string(newSettings)
 	}
 
-    normalizeInboundForDB(inbounds)
 	err = tx.Save(inbounds).Error
 	if err != nil {
 		return false, 0, err
 	}
 
-    normalizeInboundForDB(inbounds)
 	err = tx.Save(traffics).Error
 	if err != nil {
 		return false, 0, err
@@ -2323,7 +2320,6 @@ func (s *InboundService) MigrationRequirements() {
 		}
 	}
 
-    normalizeInboundForDB(inbounds)
 	tx.Save(inbounds)
 
 	// Remove orphaned traffics
