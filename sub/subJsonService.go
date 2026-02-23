@@ -8,6 +8,7 @@ import (
 	"strings"
 
 	"github.com/kirden31/3x-ui/v2/database/model"
+	"github.com/kirden31/3x-ui/v2/database/model"
 	"github.com/kirden31/3x-ui/v2/logger"
 	"github.com/kirden31/3x-ui/v2/util/json_util"
 	"github.com/kirden31/3x-ui/v2/util/random"
@@ -102,12 +103,12 @@ func (s *SubJsonService) GetJson(subId string, host string) (string, string, err
 		}
 
 		// APPLY CUSTOM PORT RULES
-		applyCustomPortRules(inbound)
+// 		applyCustomPortRules(inbound)
 
 		for _, client := range clients {
 			if client.Enable && client.SubID == subId {
 				clientTraffics = append(clientTraffics, s.SubService.getClientTraffics(inbound.ClientStats, client.Email))
-				newConfigs := s.getConfig(inbound, client, host)
+				newConfigs := s.getConfig(inbound.GenXrayInboundConfig(), client, host)
 				configArray = append(configArray, newConfigs...)
 			}
 		}
