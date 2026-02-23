@@ -8,7 +8,6 @@ import (
 	"strings"
 
 	"github.com/kirden31/3x-ui/v2/database/model"
-	"github.com/kirden31/3x-ui/v2/database/model"
 	"github.com/kirden31/3x-ui/v2/logger"
 	"github.com/kirden31/3x-ui/v2/util/json_util"
 	"github.com/kirden31/3x-ui/v2/util/random"

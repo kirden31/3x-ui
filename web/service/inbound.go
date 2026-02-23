@@ -287,6 +287,7 @@ func (s *InboundService) AddInbound(inbound *model.Inbound) (*model.Inbound, boo
 		}
 	}()
 
+    normalizeInboundForDB(inbound)
 	err = tx.Save(inbound).Error
 	if err == nil {
 		if len(inbound.ClientStats) == 0 {
@@ -510,6 +511,7 @@ func (s *InboundService) UpdateInbound(inbound *model.Inbound) (*model.Inbound, 
 	}
 	s.xrayApi.Close()
 
+    normalizeInboundForDB(oldInbound)
 	return inbound, needRestart, tx.Save(oldInbound).Error
 }
 
@@ -673,6 +675,7 @@ func (s *InboundService) AddInboundClient(data *model.Inbound) (bool, error) {
 	}
 	s.xrayApi.Close()
 
+    normalizeInboundForDB(oldInbound)
 	return needRestart, tx.Save(oldInbound).Error
 }
 
@@ -761,6 +764,8 @@ func (s *InboundService) DelInboundClient(inboundId int, clientId string) (bool,
 			s.xrayApi.Close()
 		}
 	}
+
+    normalizeInboundForDB(oldInbound)
 	return needRestart, db.Save(oldInbound).Error
 }
 
@@ -936,6 +941,8 @@ func (s *InboundService) UpdateInboundClient(data *model.Inbound, clientId strin
 		logger.Debug("Client old email not found")
 		needRestart = true
 	}
+
+    normalizeInboundForDB(oldInbound)
 	return needRestart, tx.Save(oldInbound).Error
 }
 
@@ -1113,6 +1120,8 @@ func (s *InboundService) adjustTraffics(tx *gorm.DB, dbClientTraffics []*xray.Cl
 				inbounds[inbound_index].Settings = string(modifiedSettings)
 			}
 		}
+
+        normalizeInboundForDB(inbounds)
 		err = tx.Save(inbounds).Error
 		if err != nil {
 			logger.Warning("AddClientTraffic update inbounds ", err)
@@ -1195,10 +1204,14 @@ func (s *InboundService) autoRenewClients(tx *gorm.DB) (bool, int64, error) {
 		}
 		inbounds[inbound_index].Settings = string(newSettings)
 	}
+
+    normalizeInboundForDB(inbounds)
 	err = tx.Save(inbounds).Error
 	if err != nil {
 		return false, 0, err
 	}
+
+    normalizeInboundForDB(inbounds)
 	err = tx.Save(traffics).Error
 	if err != nil {
 		return false, 0, err
@@ -1957,6 +1970,8 @@ func (s *InboundService) DelDepletedClients(id int) (err error) {
 			}
 
 			oldInbound.Settings = string(newSettings)
+
+			normalizeInboundForDB(oldInbound)
 			err = tx.Save(oldInbound).Error
 			if err != nil {
 				return err
@@ -2307,6 +2322,8 @@ func (s *InboundService) MigrationRequirements() {
 			}
 		}
 	}
+
+    normalizeInboundForDB(inbounds)
 	tx.Save(inbounds)
 
 	// Remove orphaned traffics
@@ -2506,5 +2523,6 @@ func (s *InboundService) DelInboundClientByEmail(inboundId int, email string) (b
 		}
 	}
 
+    normalizeInboundForDB(oldInbound)
 	return needRestart, db.Save(oldInbound).Error
 }
