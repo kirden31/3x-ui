@@ -2,6 +2,7 @@ package sub
 
 import (
 	"encoding/json"
+	"strings"
 
 	"github.com/kirden31/3x-ui/v2/database/model"
 )
