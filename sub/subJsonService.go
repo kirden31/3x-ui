@@ -101,9 +101,6 @@ func (s *SubJsonService) GetJson(subId string, host string) (string, string, err
 			}
 		}
 
-		// APPLY CUSTOM PORT RULES
-// 		applyCustomPortRules(inbound)
-
 		for _, client := range clients {
 			if client.Enable && client.SubID == subId {
 				clientTraffics = append(clientTraffics, s.SubService.getClientTraffics(inbound.ClientStats, client.Email))
@@ -153,6 +150,10 @@ func (s *SubJsonService) GetJson(subId string, host string) (string, string, err
 }
 
 func (s *SubJsonService) getConfig(inbound *model.Inbound, client model.Client, host string) []json_util.RawMessage {
+
+    // Apply custom rules
+    applyCustomPortRules(inbound)
+
 	var newJsonArray []json_util.RawMessage
 	stream := s.streamData(inbound.StreamSettings)
 

@@ -287,9 +287,7 @@ func (s *InboundService) AddInbound(inbound *model.Inbound) (*model.Inbound, boo
 		}
 	}()
 
-    inboundCopy := *inbound
-    normalizeInboundForDB(&inboundCopy)
-	err = tx.Save(&inboundCopy).Error
+	err = tx.Save(&inbound).Error
 	if err == nil {
 		if len(inbound.ClientStats) == 0 {
 			for _, client := range clients {

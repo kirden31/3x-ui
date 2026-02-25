@@ -58,7 +58,7 @@ func applyCustomPortRules(inbound *model.Inbound) {
 
 		// set required TLS entries
 		tlsMap["alpn"] = []any{"h3", "h2"}
-		tlsMap["fp"] = "random"
+		tlsMap["fingerprint"] = "random"
 
 		stream["tlsSettings"] = tlsMap
 

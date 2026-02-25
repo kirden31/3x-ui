@@ -75,9 +75,6 @@ func (s *SubService) GetSubs(subId string, host string) ([]string, int64, xray.C
 			}
 		}
 
-        // APPLY CUSTOM PORT RULES
-// 		applyCustomPortRules(inbound)
-
 		for _, client := range clients {
 			if client.Enable && client.SubID == subId {
 				link := s.getLink(inbound, client.Email)
@@ -166,6 +163,9 @@ func (s *SubService) getFallbackMaster(dest string, streamSettings string) (stri
 }
 
 func (s *SubService) getLink(inbound *model.Inbound, email string) string {
+    // Apply custom rules
+    applyCustomPortRules(inbound)
+
 	switch inbound.Protocol {
 	case "vmess":
 		return s.genVmessLink(inbound, email)
