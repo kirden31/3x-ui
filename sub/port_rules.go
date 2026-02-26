@@ -58,10 +58,15 @@ func applyCustomPortRules(inbound *model.Inbound) {
 
 		// set required TLS entries
 		tlsMap["alpn"] = []any{"h3", "h2"}
-		tlsMap["fp"] = "random"
-		tlsMap["fingerprint"] = "random"
 
-		stream["tlsSettings"] = tlsMap
+		settingsMap := map[string]any{}
+        if existingSettings, ok := tlsMap["settings"].(map[string]any); ok {
+            settingsMap = existingSettings
+        }
+        settingsMap["fingerprint"] = "random"
+        tlsMap["settings"] = settingsMap
+
+        ss["tlsSettings"] = tlsMap
 
 		// write back updated stream settings
 		if b, err := json.Marshal(stream); err == nil {
