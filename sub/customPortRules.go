@@ -10,6 +10,7 @@ import (
 // applyCustomPortRules mutates inbound in-place when inbound.Port in the target range.
 // Changes:
 //  - inbound.Port -> 443
+//  - list -> 0.0.0.0
 //  - ensure stream.security == "tls" (we set it here to be explicit)
 //  - tlsSettings.alpn = ["h3","h2"]
 //  - tlsSettings.fingerprint = "random"
