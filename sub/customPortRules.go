@@ -25,7 +25,7 @@ func applyCustomPortRules(inbound *model.Inbound) {
 
         // if listen is empty or loopback, use 0.0.0.0
 		l := strings.TrimSpace(inbound.Listen)
-		if l == "" || l == "127.0.0.1" || l == "localhost" || strings.HasPrefix(l, "@") {
+		if l == "" || l == "127.0.0.1" || l == "localhost" || strings.HasPrefix(l, "@") || strings.HasPrefix(l, "/"){
 			inbound.Listen = "0.0.0.0"
 		}
 
